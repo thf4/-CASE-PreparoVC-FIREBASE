@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import {
   Col,
   Button,
@@ -9,18 +9,48 @@ import {
   Container,
   Card,
   CardBody,
+  Alert,
 } from "reactstrap";
 import "./local.css";
-import { Menu } from "../../components/Menu/Menu";
+
+import { app } from "../../Auth/Config-fire";
+import { Menu } from "../../components/Menu-User/User-Menu";
 import Footer from "../../components/Footer/Footer";
+import { AuthContext } from "../../Auth/Auth-Provider";
+
 const Local = (props) => {
+  const { currentUser } = useContext(AuthContext);
+  const [user, setUser] = useState({
+    cep: "",
+    cidade: "",
+    estado: "",
+    endereco: "",
+    numero: "",
+    complemento: "",
+    bairro: "",
+  });
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  const handleSubmit = async (e) => {
+    try {
+      const db = app.firestore();
+      setSuccess("Atualizado com sucesso!");
+      return db.collection(`usuario-Endereço`).doc(currentUser.uid).set(user);
+    } catch (err) {
+      console.log(err);
+      return setError("Não foi possivel atualizar!");
+    }
+  };
   return (
     <div className="local-div">
       <Menu />
       <h6>Localização</h6>
       <Container>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Card>
+            {error && <Alert color="danger">{error}</Alert>}
+            {success && <Alert color="success">{success}</Alert>}
             <CardBody>
               <div>
                 <h4>Instruções</h4>
@@ -33,15 +63,37 @@ const Local = (props) => {
                 <FormGroup row>
                   <Label for="cep">CEP٭</Label>
                   <Col sm={5}>
-                    <Input id="cep" type="text" />
+                    <Input
+                      id="cep"
+                      type="text"
+                      value={user.cep}
+                      onChange={(e) =>
+                        setUser({ ...user, cep: e.target.value })
+                      }
+                    />
                   </Col>
-                  <Label for="cep">Cidade٭</Label>
+                  <Label for="cidade">Cidade٭</Label>
                   <Col sm={5}>
-                    <Input id="cep" type="text" />
+                    <Input
+                      id="cidade"
+                      type="text"
+                      value={user.cidade}
+                      onChange={(e) =>
+                        setUser({ ...user, cidade: e.target.value })
+                      }
+                    />
                   </Col>
-                  <Label for="exampleSelect">Estado٭</Label>
+                  <Label for="estado">Estado٭</Label>
                   <Col sm={5}>
-                    <Input type="select" name="select" id="exampleSelect">
+                    <Input
+                      type="select"
+                      name="select"
+                      id="estado"
+                      value={user.estado}
+                      onChange={(e) =>
+                        setUser({ ...user, estado: e.target.value })
+                      }
+                    >
                       <option disabled>Selecione o Estado</option>
                       <option>AC</option>
                       <option>AL</option>
@@ -71,34 +123,59 @@ const Local = (props) => {
                       <option>TO</option>
                     </Input>
                   </Col>
-                  <Label for="cep">Bairro٭</Label>
-                  <Col sm={5}>
-                    <Input id="cep" type="text" />
-                  </Col>
-                  <Label for="cep">Endereço٭</Label>
-                  <Col sm={5}>
-                    <Input id="cep" type="text" />
-                  </Col>
-                  <Label for="cep">Número٭</Label>
-                  <Col sm={5}>
-                    <Input id="cep" type="text" />
-                  </Col>
-                  <Label for="cep">Complemento٭</Label>
+                  <Label for="bairro">Bairro٭</Label>
                   <Col sm={5}>
                     <Input
-                      id="cep"
+                      id="bairro"
+                      type="text"
+                      value={user.bairro}
+                      onChange={(e) =>
+                        setUser({ ...user, bairro: e.target.value })
+                      }
+                    />
+                  </Col>
+                  <Label for="endereço">Endereço٭</Label>
+                  <Col sm={5}>
+                    <Input
+                      id="endereço"
+                      type="text"
+                      value={user.endereco}
+                      onChange={(e) =>
+                        setUser({ ...user, endereco: e.target.value })
+                      }
+                    />
+                  </Col>
+                  <Label for="numero">Número٭</Label>
+                  <Col sm={5}>
+                    <Input
+                      id="numero"
+                      type="text"
+                      value={user.numero}
+                      onChange={(e) =>
+                        setUser({ ...user, numero: e.target.value })
+                      }
+                    />
+                  </Col>
+                  <Label for="complemento">Complemento٭</Label>
+                  <Col sm={5}>
+                    <Input
+                      id="complemento"
                       type="text"
                       placeholder="Insira um complemento se achar necessário"
+                      value={user.complemento}
+                      onChange={(e) =>
+                        setUser({ ...user, complemento: e.target.value })
+                      }
                     />
                   </Col>
                 </FormGroup>
               </div>
             </CardBody>
           </Card>
-          <Button className="btn-local">Enviar٭</Button>
+          <Button className="btn-local">Enviar</Button>
         </Form>
       </Container>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

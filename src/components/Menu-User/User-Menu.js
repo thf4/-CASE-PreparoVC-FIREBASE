@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useHistory } from "react-router";
+
 import {
   Collapse,
   Navbar,
@@ -7,11 +9,22 @@ import {
   Nav,
   NavItem,
   NavLink,
+  DropdownToggle,
+  UncontrolledDropdown,
+  DropdownItem,
+  DropdownMenu,
 } from "reactstrap";
 import "../Menu/menu.css";
+import "./user-menu.css";
+
+import { AuthContext } from "../../Auth/Auth-Provider";
+import { app } from "../../Auth/Config-fire";
+
 export const Menu = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
+  const history = useHistory();
 
   return (
     <div className="containerNavbar">
@@ -39,6 +52,42 @@ export const Menu = (props) => {
               <NavLink className="navmenu">
                 <strong>INSCRIÇÕES</strong>
               </NavLink>
+            </NavItem>
+            <NavItem>
+              <div className="toogle-nav">
+                <NavLink>
+                  <UncontrolledDropdown setActiveFromChild>
+                    <DropdownToggle className="nav-link" caret>
+                      p
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem
+                        onClick={() => {
+                          app.auth().signOut();
+                          setCurrentUser(null);
+                          history.push("/login");
+                        }}
+                      >
+                        Logout
+                      </DropdownItem>
+                      <DropdownItem
+                        onClick={(e) => {
+                          history.push(`/dados/${currentUser.uid}`);
+                        }}
+                      >
+                        Dados
+                      </DropdownItem>
+                      <DropdownItem
+                        onClick={(e) => {
+                          history.push(`/localização/${currentUser.uid}`);
+                        }}
+                      >
+                        Localização
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </NavLink>
+              </div>
             </NavItem>
           </Nav>
         </Collapse>

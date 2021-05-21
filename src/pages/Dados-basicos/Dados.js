@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   Form,
   Input,
@@ -16,12 +16,15 @@ import {
 import { Menu } from "../../components/Menu-User/User-Menu";
 import Footer from "../../components/Footer/Footer";
 import { app } from "../../Auth/Config-fire";
+import { AuthContext } from "../../Auth/Auth-Provider";
 
 const Dados = (props) => {
+  const { currentUser } = useContext(AuthContext);
   const [user, setUser] = useState({
     name: "",
     surname: "",
     telephone: "",
+    email: "",
     image: "",
     github: "",
     behance: "",
@@ -32,19 +35,11 @@ const Dados = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = app.database().ref("Users").child("data");
-      response.add({
-          name: user.name,
-          surname: user.surname,
-          telephone: user.telephone,
-          image: user.image,
-          github: user.github,
-          behance: user.behance,
-          linkedin: user.linkedin,
-        });
+      const db = app.firestore();
       setError("Atualizado com sucesso!");
-      return;
+      return db.collection(`usuario/`).doc(currentUser.uid).set(user);
     } catch (err) {
+      console.log(err);
       return setError("Não foi possivel atualizar!");
     }
   };

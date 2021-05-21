@@ -14,12 +14,12 @@ function App() {
     <div>
       <AuthProvider>
         <Router>
-          <Switch>  
+          <Switch>
             <Route exact path="/login" component={Login} />
             <PrivateRoute exact path="/home" component={Home} />
             <Route exact path="/cadastrar" component={Cadastro} />
-            <PrivateRoute exact path="/dados" component={Dados} />
-            <PrivateRoute exact path="/localização" component={Local} />
+            <PrivateRoute exact path="/dados/:uid" component={Dados} />
+            <PrivateRoute exact path="/localização/:uid" component={Local} />
             <Route exact path="*" component={() => "404 NOT FOUND"} />
           </Switch>
         </Router>

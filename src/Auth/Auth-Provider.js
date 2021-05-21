@@ -4,7 +4,7 @@ import { app } from "./Config-fire";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     app.auth().onAuthStateChanged(setCurrentUser);

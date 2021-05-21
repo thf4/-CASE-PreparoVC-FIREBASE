@@ -17,24 +17,27 @@ import { app } from "../../Auth/Config-fire";
 import { Menu } from "../../components/Menu/Menu";
 
 const Cadastro = ({ history }) => {
-  const [error, setError] = useState("");
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+    password2: "",
+  });
+  const [error, setError] = useState();
 
   const cadastroUser = useCallback(
     async (e) => {
       e.preventDefault();
-
-      const { email, password } = e.target;
       try {
         await app
           .auth()
-          .createUserWithEmailAndPassword(email.value, password.value);
-        setError("Success");
+          .createUserWithEmailAndPassword(user.email, user.password);
+        setError("Usuario cadastrado com sucesso!");
         history.push("/login");
       } catch (err) {
-        setError("Error to create");
+        setError("Por favor, informe email e senha para realizar o cadastro.");
       }
     },
-    [history]
+    [history, user]
   );
 
   return (
@@ -43,7 +46,6 @@ const Cadastro = ({ history }) => {
       <Container>
         <div className="cadastar-camp">
           <Card className="card-cadastro">
-            {error && <Alert color="danger">{error} </Alert>}
             <Form onSubmit={cadastroUser} className="card-body">
               <Label className="mt-4">CADASTRO DO CANDIDATO </Label>
               <FormGroup>
@@ -55,6 +57,9 @@ const Cadastro = ({ history }) => {
                       id="email"
                       placeholder="E-MAIL"
                       className=" input-Cadastrar"
+                      onChange={(e) =>
+                        setUser({ ...user, email: e.target.value })
+                      }
                     />
                   </Col>
                 </Row>
@@ -65,9 +70,12 @@ const Cadastro = ({ history }) => {
                     <Input
                       type="password"
                       name="password"
-                      id="password2"
+                      id="password"
                       placeholder="SENHA"
                       className="input-Cadastrar"
+                      onChange={(e) =>
+                        setUser({ ...user, password: e.target.value })
+                      }
                     />
                   </Col>
                 </Row>
@@ -75,6 +83,7 @@ const Cadastro = ({ history }) => {
 
               <Button className=" btn-Cadastrar btn-danger ">CADASTRAR</Button>
             </Form>
+            {error}
           </Card>
         </div>
       </Container>
