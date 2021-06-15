@@ -1,14 +1,15 @@
 import firebase from "firebase/app";
-import "firebase/analytics";
+
 import "firebase/auth";
 import "firebase/firestore";
 
 export const app = firebase.initializeApp({
-  apiKey: "AIzaSyDkoZb1Wo3tFpXWpONC-JcImBERNGPzDKk",
-  authDomain: "case-preparo-f3ef7.firebaseapp.com",
-  databaseURL: "https://case-preparo-f3ef7-default-rtdb.firebaseio.com",
-  projectId: "case-preparo-f3ef7",
-  storageBucket: "case-preparo-f3ef7.appspot.com",
-  messagingSenderId: "572244145991",
-  appId: "1:572244145991:web:f029b916db0104f6c1fe62",
+  apiKey: "AIzaSyC6hfjDYmxBHynFxScERLDobUzkK52McVw",
+  authDomain: "preparo-5e597.firebaseapp.com",
+  projectId: "preparo-5e597",
+  storageBucket: "preparo-5e597.appspot.com",
+  messagingSenderId: "762571439184",
+  appId: "1:762571439184:web:623d7769d4638d2c536555"
 });
+
+ 

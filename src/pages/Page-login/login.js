@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useState } from "react";
-import { withRouter } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { withRouter, useHistory, Redirect } from "react-router-dom";
 import {
   Form,
   Input,
@@ -10,20 +10,20 @@ import {
   Card,
   Row,
   Button,
-  Spinner,
+  Spinner
 } from "reactstrap";
 
 import { app } from "../../Auth/Config-fire";
 import "./login.css";
 import { Menu } from "../../components/Menu/Menu";
 import { AuthContext } from "../../Auth/Auth-Provider";
+const Login = () => {
 
-const Login = ({ history }) => {
-  const { currentUser } = useContext(AuthContext);
-  const [loading, setLoading] = useState();
   const [error, setError] = useState();
-  const loginUser = useCallback(
-    async (e) => {
+  const [loading, setLoading] = useState();
+  const history = useHistory()
+
+  const loginUser = async (e) => {
       e.preventDefault();
       const { email, password } = e.target.elements;
 
@@ -31,16 +31,19 @@ const Login = ({ history }) => {
         const response = await app
           .auth()
           .signInWithEmailAndPassword(email.value, password.value);
-        history.push(`/dados/${currentUser.uid}`);
-        setLoading(true);
+        setLoading(true)
+        history.replace(`/home`);
         return response;
       } catch (err) {
-        console.log(err);
+        setLoading(false)
         setError("Verifique se o email e senha estão corretos.");
       }
-    },
-    [history, currentUser]
-  );
+    }
+ const { currentUser } = useContext(AuthContext);
+
+ if(currentUser){
+   return <Redirect to="/home" />
+ };
 
   return (
     <div>
@@ -80,7 +83,7 @@ const Login = ({ history }) => {
                 </Row>
               </FormGroup>
 
-              {error}
+              {error}  { loading && <Spinner color="danger">Carregando</Spinner>}
               <Button className="mt-4 btn-login-LOGIN btn-danger ">
                 ENTRAR
               </Button>

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Col,
   Button,
@@ -33,15 +33,29 @@ const Local = (props) => {
   const [success, setSuccess] = useState(null);
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    
     try {
-      const db = app.firestore();
+      const db = await app.firestore();
       setSuccess("Atualizado com sucesso!");
-      return db.collection(`usuario-Endereço`).doc(currentUser.uid).set(user);
+      setError(null)
+      return await db.collection(`usuario-Endereço`).doc(currentUser.uid).set(user);
     } catch (err) {
       console.log(err);
+      setSuccess(null)
       return setError("Não foi possivel atualizar!");
     }
   };
+
+  useEffect(()=>{
+    const data = async () => {
+      const response  =  await app.firestore().collection("usuario-Endereço").doc(currentUser.uid).get()
+      if(response.data()){
+        setUser(response.data())
+      }
+    }
+   data()
+  },[currentUser.uid])
   return (
     <div className="local-div">
       <Menu />
@@ -66,7 +80,7 @@ const Local = (props) => {
                     <Input
                       id="cep"
                       type="text"
-                      value={user.cep}
+                      value={user.cep || ""}
                       onChange={(e) =>
                         setUser({ ...user, cep: e.target.value })
                       }
@@ -77,7 +91,7 @@ const Local = (props) => {
                     <Input
                       id="cidade"
                       type="text"
-                      value={user.cidade}
+                      value={user.cidade || ""}
                       onChange={(e) =>
                         setUser({ ...user, cidade: e.target.value })
                       }
@@ -89,7 +103,7 @@ const Local = (props) => {
                       type="select"
                       name="select"
                       id="estado"
-                      value={user.estado}
+                      value={user.estado|| ""}
                       onChange={(e) =>
                         setUser({ ...user, estado: e.target.value })
                       }
@@ -128,7 +142,7 @@ const Local = (props) => {
                     <Input
                       id="bairro"
                       type="text"
-                      value={user.bairro}
+                      value={user.bairro|| ""}
                       onChange={(e) =>
                         setUser({ ...user, bairro: e.target.value })
                       }
@@ -139,7 +153,7 @@ const Local = (props) => {
                     <Input
                       id="endereço"
                       type="text"
-                      value={user.endereco}
+                      value={user.endereco|| ""}
                       onChange={(e) =>
                         setUser({ ...user, endereco: e.target.value })
                       }
@@ -150,7 +164,7 @@ const Local = (props) => {
                     <Input
                       id="numero"
                       type="text"
-                      value={user.numero}
+                      value={user.numero|| ""}
                       onChange={(e) =>
                         setUser({ ...user, numero: e.target.value })
                       }
@@ -162,7 +176,7 @@ const Local = (props) => {
                       id="complemento"
                       type="text"
                       placeholder="Insira um complemento se achar necessário"
-                      value={user.complemento}
+                      value={user.complemento|| ""}
                       onChange={(e) =>
                         setUser({ ...user, complemento: e.target.value })
                       }

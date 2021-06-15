@@ -7,16 +7,12 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    app.auth().onAuthStateChanged(setCurrentUser);
+   app.auth().onAuthStateChanged(setCurrentUser);
+  
   }, []);
-
+  
   return (
-    <AuthContext.Provider
-      value={{
-        currentUser,
-        setCurrentUser,
-      }}
-    >
+    <AuthContext.Provider value={{ currentUser }} >
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Form,
   Input,
@@ -24,7 +24,7 @@ const Dados = (props) => {
     name: "",
     surname: "",
     telephone: "",
-    email: "",
+    email: "" || currentUser.email,
     image: "",
     github: "",
     behance: "",
@@ -35,15 +35,26 @@ const Dados = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const db = app.firestore();
+      const db = await app.firestore();
       setError("Atualizado com sucesso!");
-      return db.collection(`usuario/`).doc(currentUser.uid).set(user);
+      return await db.collection(`usuario`).doc(currentUser.uid).set(user);
     } catch (err) {
       console.log(err);
       return setError("Não foi possivel atualizar!");
     }
   };
 
+  useEffect(()=>{
+    const data = async () => {
+      const response  =  await app.firestore().collection("usuario").doc(currentUser.uid).get()
+      if(response.data()){
+        setUser(response.data())
+      }
+     
+    }
+   data()
+  },[currentUser.uid])
+  
   return (
     <div>
       <Menu />
@@ -56,14 +67,15 @@ const Dados = (props) => {
                 <h4>Foto de perfil</h4>
               </CardTitle>
               <CardSubtitle>Adicione uma foto em seu perfil</CardSubtitle>
-              <Form className="mt-3 col-md d-flex flex-column align-items-left justify-content-center">
+             
                 <Label className="">Carregar</Label>
                 <Input
                   type="file"
-                  value={user.image}
+                  value={user.image || ""}
                   onChange={(e) => setUser({ ...user, image: e.target.value })}
                 />
-              </Form>
+              
+           
             </CardBody>
           </Card>
           <Card>
@@ -82,7 +94,7 @@ const Dados = (props) => {
                   <Input
                     id="emailex"
                     type="email"
-                    value={user.email}
+                    value={user.email || currentUser.email || "" }
                     onChange={(e) =>
                       setUser({ ...user, email: e.target.value })
                     }
@@ -111,7 +123,7 @@ const Dados = (props) => {
                   <Input
                     id="emailex"
                     type="text"
-                    value={user.name}
+                    value={user.name  || ""}
                     onChange={(e) => setUser({ ...user, name: e.target.value })}
                   />
                 </Col>
@@ -122,7 +134,7 @@ const Dados = (props) => {
                   <Input
                     id="emailex"
                     type="text"
-                    value={user.surname}
+                    value={user.surname || ""}
                     onChange={(e) =>
                       setUser({ ...user, surname: e.target.value })
                     }
@@ -135,7 +147,7 @@ const Dados = (props) => {
                   <Input
                     id="emailex"
                     type="text"
-                    value={user.telephone}
+                    value={user.telephone|| ""}
                     onChange={(e) =>
                       setUser({ ...user, telephone: e.target.value })
                     }
@@ -161,7 +173,7 @@ const Dados = (props) => {
                   <Input
                     id="Github"
                     type="text"
-                    value={user.github}
+                    value={user.github|| ""}
                     onChange={(e) =>
                       setUser({ ...user, github: e.target.value })
                     }
@@ -174,7 +186,7 @@ const Dados = (props) => {
                   <Input
                     id="Behance"
                     type="text"
-                    value={user.behance}
+                    value={user.behance|| ""}
                     onChange={(e) =>
                       setUser({ ...user, behance: e.target.value })
                     }
@@ -187,7 +199,7 @@ const Dados = (props) => {
                   <Input
                     id="linkedin"
                     type="text"
-                    value={user.linkedin}
+                    value={user.linkedin|| ""}
                     onChange={(e) =>
                       setUser({ ...user, linkedin: e.target.value })
                     }

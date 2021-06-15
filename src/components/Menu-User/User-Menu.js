@@ -23,8 +23,12 @@ import { app } from "../../Auth/Config-fire";
 export const Menu = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
-  const { currentUser, setCurrentUser } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const history = useHistory();
+
+  const logout = async () =>{
+    await app.auth().signOut();
+  }
 
   return (
     <div className="containerNavbar">
@@ -63,8 +67,7 @@ export const Menu = (props) => {
                     <DropdownMenu>
                       <DropdownItem
                         onClick={() => {
-                          app.auth().signOut();
-                          setCurrentUser(null);
+                          logout()
                           history.push("/login");
                         }}
                       >

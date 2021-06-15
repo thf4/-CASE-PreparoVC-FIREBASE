@@ -6,7 +6,7 @@ const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
   const { currentUser } = useContext(AuthContext);
 
   if (!currentUser) return <Redirect to="/login" />;
-  return <Route {...rest} component={RouteComponent} />;
+  else return <Route {...rest} component={RouteComponent} />;
 };
 
 export default PrivateRoute;
